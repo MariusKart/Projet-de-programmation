@@ -13,7 +13,7 @@ class Graph:
     nb_nodes: int
         The number of nodes.
     nb_edges: int
-        The number of edges. 
+        The number of edges.
     """
 
     def __init__(self, nodes=[]):
@@ -70,11 +70,40 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
-        raise NotImplementedError
-    
-
+        x=self.connected_components_set()
+        for graph in x:
+            if src in graph and dest not in graph:
+                return None
+        
+        
     def connected_components(self):
-        raise NotImplementedError
+        """retourne une
+        liste de listes (une par composante connectée)"""
+        connected = []
+        visited = []
+
+        def dfs(components, node):
+            if node not in visited:
+                visited.append(node)
+                components.append(node)
+                for neighboor in self.graph[node]:
+                    if neighboor[0] not in visited:
+                        dfs(components, neighboor[0])
+        for node in self.nodes:
+            if node not in visited:
+                components = []
+                dfs(components, node)
+                connected.append(components)
+        return connected
+
+
+                
+        
+                    
+                
+        
+           
+
 
 
     def connected_components_set(self):
