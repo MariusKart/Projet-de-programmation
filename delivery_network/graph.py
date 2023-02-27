@@ -1,4 +1,4 @@
-class Graph:
+    class Graph:
     """
     A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented. 
     Attributes: 
@@ -70,10 +70,16 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
+        """ Écrire une fonction get_path_with_power qui prend en entrée une puissance de camion
+p et un trajet t et qui décide si un camion de puissance p peut couvrir le trajet t (et retourne, si c’est
+possible, un chemin admissible pour le trajet t). En pratique, on retournera le chemin si c’est possible et
+None sinon."""
         x=self.connected_components_set()
         for graph in x:
             if src in graph and dest not in graph:
                 return None
+            else:
+                
         
         
     def connected_components(self):
