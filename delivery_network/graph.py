@@ -70,16 +70,35 @@
     
 
     def get_path_with_power(self, src, dest, power):
+        return None
         """ Écrire une fonction get_path_with_power qui prend en entrée une puissance de camion
 p et un trajet t et qui décide si un camion de puissance p peut couvrir le trajet t (et retourne, si c’est
 possible, un chemin admissible pour le trajet t). En pratique, on retournera le chemin si c’est possible et
 None sinon."""
-        x=self.connected_components_set()
-        for graph in x:
-            if src in graph and dest not in graph:
-                return None
-            else:
-                
+     def find_path(graph, source, destination, power):
+    stack = [(source, power)]
+    visited = set()
+    while stack:
+        node, power_left = stack.pop()
+        if node == destination:
+            # destination node found, return the path
+            path = [node]
+            while stack:
+                node, _ = stack.pop()
+                path.append(node)
+            path.reverse()
+            return path
+        if node in visited:
+            # node already visited, skip it
+            continue
+        visited.add(node)
+        for neighbor, weight in graph[node]:
+            if weight <= power_left:
+                # neighbor can be reached with the remaining power
+                stack.append((neighbor, power_left - weight))
+    # destination node not found
+        return None
+
         
         
     def connected_components(self):
