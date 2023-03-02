@@ -72,7 +72,7 @@ class Graph:
 
     def get_path_with_power(self, src, dest, power):
         def dfs(node, visited, path, power_left):
-            visited.append(node)
+            visited.add(node)
             path.append(node)
             if node == dest:
                 return True
@@ -81,9 +81,10 @@ class Graph:
                     power_left -= neighboor[1]
                     if dfs(neighboor[0], visited, path, power_left):
                         return True
+                    power_left += neighboor[1]
             path.pop()
             return False
-        visited = []
+        visited = set()
         path = []
         power_left = power
         if dfs(src, visited, path, power_left):
