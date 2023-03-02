@@ -79,7 +79,7 @@ class Graph:
             for neighboor in self.graph[node]:
                 if neighboor[0] not in visited and power_left - neighboor[1] >= 0:
                     power_left -= neighboor[1]
-                    if dfs(neighboor, visited, path, power_left):
+                    if dfs(neighboor[0], visited, path, power_left):
                         return True
                     power_left += neighboor[1]
             path.pop()
