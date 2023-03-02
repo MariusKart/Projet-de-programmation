@@ -76,12 +76,12 @@ class Graph:
             path.append(node)
             if node == dest:
                 return True
-            for neighboor, power_necessary in self.graph[node]:
-                if neighboor not in visited and power_left - power_necessary >= 0:
-                    power_left -= power_necessary
+            for neighboor in self.graph[node]:
+                if neighboor[0] not in visited and power_left - neighboor[1] >= 0:
+                    power_left -= neighboor[1]
                     if dfs(neighboor, visited, path, power_left):
                         return True
-                    power_left += power_necessary
+                    power_left += neighboor[1]
             path.pop()
             return False
         visited = set()
