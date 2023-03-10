@@ -70,35 +70,44 @@ class Graph:
         self.nb_edges += 1
     
 
-    def get_path_with_power(self, src, dest, power):
+    """def get_path_with_power(self, src, dest, power):
         def dfs(node, visited, path, power_left):
             visited.add(node)
-            path.append(node)
             if node == dest:
-                return True
+                path.append(node)
+                return path
             for neighboor in self.graph[node]:
-                if neighboor[0] not in visited and power_left - neighboor[1] >= 0:
+                if neighboor[0] not in visited:# and power_left - neighboor[1] >= 0:
                     power_left -= neighboor[1]
-                    if dfs(neighboor[0], visited, path, power_left):
-                        return True
+                    dfs(neighboor[0], visited, path, power_left)
                     power_left += neighboor[1]
-            path.pop()
-            return False
+            return None
         visited = set()
         path = []
         power_left = power
-        if dfs(src, visited, path, power_left):
-            return path
-        elif not dfs(src, visited, path, power_left):
-            return None
+        return dfs(src, visited, path, power_left)"""
 
 
+    def get_path_with_power(self, src, dest, power):
+        paths=[]
+        def dfs(node,path,visited):
+            visited.append(node)
+            paths.append(path)
+            for neighbor in self.graph[node]:
+                if neighbor[0] not in visited and power >= neighbor[1] :
+                    dfs(neighbor[0], path+[neighbor[0]], visited)
+            return paths
+        for path in dfs(src,[src],[]):
+            if dest in path:
+                return path
 
         
+         
         
-    def connected_components(self):
-        """retourne une
-        liste de listes (une par composante connectée)"""
+   
+        
+        
+    """def connected_components(self):
         connected = []
         visited = []
 
@@ -114,7 +123,34 @@ class Graph:
                 components = []
                 dfs(components, node)
                 connected.append(components)
-        return connected
+        return connected"""
+    def connected_components(self):
+        L=[]
+        n=self.nb_nodes
+        #A firt loop to create a list L of lists of direct neighbours for each node
+        for i in self.nodes:
+            l=[i]+[self.graph[i][c][0] for c in range(len(self.graph[i]))]
+            L.append(l)
+        #A second loop to concatenate the lists where there are elements in common to have the connected components
+        #Each time we concatenate a list i whith a list j, we empty the list j.
+        #The loop stops when t=0 which significates that the remaining lists are all empty
+        t=1
+        while t==1:
+            t=0
+            for i in range(n):
+                if L[i]!=[]:
+                    for j in range(n):
+                        if L[j]!=[] and i!=j:
+                            #If the intersection of the two lists is not empty
+                            if list(set(L[i])&set(L[j]))!=[]:
+                                #Concatenation eliminating the doubles
+                                L[i]=list(set(L[i]+L[j]))
+                                #We empty the second list
+                                L[j]=[]
+                                t=1
+        L=[h for h in L if h!=[]]
+        return L
+
 
 
                 
