@@ -68,24 +68,6 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
-    
-
-    """def get_path_with_power(self, src, dest, power):
-        def dfs(node, visited, path, power_left):
-            visited.add(node)
-            if node == dest:
-                path.append(node)
-                return path
-            for neighboor in self.graph[node]:
-                if neighboor[0] not in visited:# and power_left - neighboor[1] >= 0:
-                    power_left -= neighboor[1]
-                    dfs(neighboor[0], visited, path, power_left)
-                    power_left += neighboor[1]
-            return None
-        visited = set()
-        path = []
-        power_left = power
-        return dfs(src, visited, path, power_left)"""
 
 
     def get_path_with_power(self, src, dest, power):
@@ -101,10 +83,25 @@ class Graph:
             if dest in path:
                 return path
 
-        
+    
          
+    def time_route(filename,graph):
+        with open(filename, "r") as file:
+            route_file= map(int, file.readline().split())
+            nb_routes=routes[0]
+            routes=range(1,len(route_file))
+            for i in range(1,len(route_file)):
+                
+                routes[i]=route_file[i]
+        mean_time=0
+        for i in range(1,11):
+            mean_time += time.perf_counter(graph.min_power(routes[i][0], routes[i][1]))
+        mean_time=mean_time/10
         
-   
+            
+
+
+
         
         
     """def connected_components(self):
@@ -173,7 +170,22 @@ class Graph:
         """
         Should return path, min_power. 
         """
-        raise NotImplementedError
+        #we first calculate the max power needed for the entire graph
+        pmax=0
+        #For that, we look at each edge and if the power needed is higher than our pmax, we replace pmax by this new power
+        for i in self.nodes:
+            L=[self.graph[i][c][0] for c in range(len(self.graph[i]))]
+            for j in L:
+                if self.graph[i][L.index(j)][1]>pmax:
+                    pmax=self.graph[i][L.index(j)][1]
+        #Now, we initiate a loop at a p=pmax level of power and while we can do the traject with this power, we degrowth p by 1 until the traject is not possible for this power p
+        p=pmax
+        while self.get_path_with_power(src,dest,p)!=None:
+            p=p-1
+        #Thus, we return p+1, the minimal power needed to get a path from the source to the destination
+        return self.get_path_with_power(src,dest,p+1),p+1
+
+    
 
 
 def graph_from_file(filename):
