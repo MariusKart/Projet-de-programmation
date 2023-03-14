@@ -1,3 +1,4 @@
+from time import perf_counter
 class Graph:
     """
     A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented. 
@@ -69,34 +70,84 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
+    def kruskal_mst(self):
+        def find(parent, i):
+            if parent[i] != i:
+                parent[i] = find(parent, parent[i])
+            return parent[i]
+
+        def union(parent, rank, i, j):
+            root_i, root_j = find(parent, i), find(parent, j)
+            if root_i == root_j:
+                return False
+            
+            if rank[root_i] < rank[root_j]:
+                parent[root_i] = root_j
+            elif rank[root_i] > rank[root_j]:
+                parent[root_j] = root_i
+            else:
+                parent[root_j] = root_i
+                rank[root_i] += 1
+                
+            return True
+        # Convert graph to edge list format
+        edges = []
+        for node in self.graph.keys():
+            for neighbor in self.graph[node]:
+                edges.append((node, neighbor[0], neighbor[1]))
+        
+        # Create parent and rank lists
+        parent = {node : node for node in self.nodes}
+        rank = {node: 0 for node in self.nodes}
+        
+        # Sort edges by weight
+        edges = sorted(edges, key=lambda e: e[2])
+        
+        # Initialize empty MST
+        mst = Graph()
+        
+        
+        for edge in edges:
+            # Check if adding the edge will create a cycle
+            if union(parent, rank, edge[0], edge[1]):
+                # Add edge to MST
+                mst.add_edge(edge[0], edge[1],edge[2])
+            
+            # Stop when MST is complete
+            if len(mst.nodes) == len(self.nodes):
+                break
+        
+        return mst
+
 
     def get_path_with_power(self, src, dest, power):
+        """
+        This function should return a path from source node to destination node in a weighted graph 
+        if possible, given a power of a truck, if not it will return none.
+
+        Parameters:
+        self (graph)
+        src (int) : source node
+        dest (int) : destination node
+        power (int) :power of the truck
+
+        Returns:
+        (list): path from src to dest
+        (None): if no path is found
+        """
         paths=[]
         def dfs(node,path,visited):
-            visited.append(node)
+            visited.append(node) # as the dfs traverses the graph, we add the node to the visited list
             paths.append(path)
-            for neighbor in self.graph[node]:
-                if neighbor[0] not in visited and power >= neighbor[1] :
+            for neighbor in self.graph[node]: #this loop creates a path from src to every node of the graph
+                if neighbor[0] not in visited and power >= neighbor[1]:
                     dfs(neighbor[0], path+[neighbor[0]], visited)
             return paths
-        for path in dfs(src,[src],[]):
+        for path in dfs(src,[src],[]):# we choose from our paths list which one leads to our dest 
             if dest in path:
                 return path
 
     
-         
-    def time_route(filename,graph):
-        with open(filename, "r") as file:
-            route_file= map(int, file.readline().split())
-            nb_routes=routes[0]
-            routes=range(1,len(route_file))
-            for i in range(1,len(route_file)):
-                
-                routes[i]=route_file[i]
-        mean_time=0
-        for i in range(1,11):
-            mean_time += time.perf_counter(graph.min_power(routes[i][0], routes[i][1]))
-        mean_time=mean_time/10
         
             
 
@@ -222,3 +273,24 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
+
+"""data_path = "/input/routes.1.in"
+g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
+time=0
+with open ("/home/onyxia/work/Projet-de-programmation/input/routes.1.in","r") as in_routes_file:
+    nb_routes = int(in_routes_file.readline())
+    for _ in range(nb_routes):
+        t_start = perf_counter()
+        src, dest, _ = list(map(int, in_routes_file.readline().split()))
+        g.min_power(src, dest)
+        t_stop = perf_counter()
+        time+=(t_stop-t_start)
+print("total time=", time)"""
+
+
+
+
+
+g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
+print(g.kruskal_mst())
+print(g)
