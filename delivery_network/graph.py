@@ -135,17 +135,19 @@ class Graph:
         (list): path from src to dest
         (None): if no path is found
         """
-        paths=[]
-        def dfs(node,path,visited):
+        def dfs(node, visited):
             visited.append(node) # as the dfs traverses the graph, we add the node to the visited list
-            paths.append(path)
-            for neighbor in self.graph[node]: #this loop creates a path from src to every node of the graph
+            if node == dest: # if we have found the destination node, we return the path
+                return [node]
+            for neighbor in self.graph[node]:
                 if neighbor[0] not in visited and power >= neighbor[1]:
-                    dfs(neighbor[0], path+[neighbor[0]], visited)
-            return paths
-        for path in dfs(src,[src],[]):# we choose from our paths list which one leads to our dest 
-            if dest in path:
-                return path
+                    path = dfs(neighbor[0], visited)
+                    if path is not None: # if a path to the destination is found, return the path
+                        return [node] + path
+            return None # if no path to the destination is found, return None
+        
+        return dfs(src, []) # call the dfs method to find a path from src to dest
+
 
     
         
