@@ -70,18 +70,32 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
-    def kruskal_mst(self):
+    def kruskal(self):
+        """
+        This function should return minimum spanning tree in a graph
+        
+        Parmaters:
+        (Graph)
+        
+        output:
+        (Graph): minimum spanning tree
+        """
+
         def find(parent, i):
+            """ This function is recursive, it returns the root of i"""
             if parent[i] != i:
                 parent[i] = find(parent, parent[i])
             return parent[i]
 
         def union(parent, rank, i, j):
+            """this function should merge two minimum spanning trees i and j,
+            it returns true when the two trees are not connected
+            it returns false when they already are connected"""
             root_i, root_j = find(parent, i), find(parent, j)
             if root_i == root_j:
                 return False
             
-            if rank[root_i] < rank[root_j]:
+            if rank[root_i] < rank[root_j]: #by doing this we optimize the algorithm by merging the smaller one to the bigger
                 parent[root_i] = root_j
             elif rank[root_i] > rank[root_j]:
                 parent[root_j] = root_i
@@ -90,35 +104,32 @@ class Graph:
                 rank[root_i] += 1
                 
             return True
-        # Convert graph to edge list format
+        #we create a list of edges to be added to the minimal tree
         edges = []
         for node in self.graph.keys():
             for neighbor in self.graph[node]:
                 edges.append((node, neighbor[0], neighbor[1]))
         
-        # Create parent and rank lists
+        # Create parent and rank lists (each node is parent to itself at first and the rank is set at 0 by default)
         parent = {node : node for node in self.nodes}
         rank = {node: 0 for node in self.nodes}
         
-        # Sort edges by weight
+        # Sort edges by weight, using a lambda function to choose the third element of the tuple
         edges = sorted(edges, key=lambda e: e[2])
         
-        # Initialize empty MST
-        mst = Graph()
-        
-        
+        # Initialize empty tree
+        tree = Graph()
         for edge in edges:
-            # Check if adding the edge will create a cycle
+            # Check if adding the edge will create a cycle (if the trees are already connected)
             if union(parent, rank, edge[0], edge[1]):
-                # Add edge to MST
-                mst.add_edge(edge[0], edge[1],edge[2])
+                # Add edge to tree
+                tree.add_edge(edge[0], edge[1],edge[2])
             
-            # Stop when MST is complete
-            if len(mst.nodes) == len(self.nodes):
+            # Stop when  all nodes are in the tree
+            if len(tree.nodes) == len(self.nodes):
                 break
         
-        return mst
-
+        return tree
 
     def get_path_with_power(self, src, dest, power):
         """
@@ -150,34 +161,12 @@ class Graph:
 
 
     
-        
-            
 
 
-
-        
-        
-    """def connected_components(self):
-        connected = []
-        visited = []
-
-        def dfs(components, node):
-            if node not in visited:
-                visited.append(node)
-                components.append(node)
-                for neighboor in self.graph[node]:
-                    if neighboor[0] not in visited:
-                        dfs(components, neighboor[0])
-        for node in self.nodes:
-            if node not in visited:
-                components = []
-                dfs(components, node)
-                connected.append(components)
-        return connected"""
     def connected_components(self):
         L=[]
         n=self.nb_nodes
-        #A firt loop to create a list L of lists of direct neighbours for each node
+        #A first loop to create a list L of lists of direct neighbours for each node
         for i in self.nodes:
             l=[i]+[self.graph[i][c][0] for c in range(len(self.graph[i]))]
             L.append(l)
@@ -238,6 +227,37 @@ class Graph:
         #Thus, we return p+1, the minimal power needed to get a path from the source to the destination
         return self.get_path_with_power(src,dest,p+1),p+1
 
+
+    def min_power_with_kruskal :
+        def min_power(self, src, dest):
+        """
+        Should return path and minimal powered required to go from source node to destination (None if no path is found)
+        
+        Parameters:
+        self (Graph)
+        src (int): source node
+        dest (int): destination node
+        
+        Output:
+        path (list): path from source to destination
+        power (int): minimal power required to go from source to destination
+        """
+        self.kruskal()
+        #we first calculate the max power needed for the entire graph
+        pmax=0
+        #For that, we look at each edge and if the power needed is higher than our pmax, we replace pmax by this new power
+        for i in self.nodes:
+            L=[self.graph[i][c][0] for c in range(len(self.graph[i]))]
+            for j in L:
+                if self.graph[i][L.index(j)][1]>pmax:
+                    pmax=self.graph[i][L.index(j)][1]
+        #Now, we initiate a loop at a p=pmax level of power and while we can do the traject with this power, we degrowth p by 1 until the traject is not possible for this power p
+        p=pmax
+        while self.get_path_with_power(src,dest,p)!=None:
+            p=p-1
+        #Thus, we return p+1, the minimal power needed to get a path from the source to the destination
+        return self.get_path_with_power(src,dest,p+1),p+1
+
     
 
 
@@ -276,23 +296,25 @@ def graph_from_file(filename):
                 raise Exception("Format incorrect")
     return g
 
-"""data_path = "/input/routes.1.in"
-g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
-time=0
+"""data_path = "/home/onyxia/work/Projet-de-programmation/input/network.1.in"
+g=graph_from_file(data_path)#we create a graph from the data
+time=0 #we set a time counter
 with open ("/home/onyxia/work/Projet-de-programmation/input/routes.1.in","r") as in_routes_file:
     nb_routes = int(in_routes_file.readline())
-    for _ in range(nb_routes):
+    for _ in range(1,6):
         t_start = perf_counter()
         src, dest, _ = list(map(int, in_routes_file.readline().split()))
         g.min_power(src, dest)
         t_stop = perf_counter()
         time+=(t_stop-t_start)
-print("total time=", time)"""
+print("total time=", time*nb_routes/5)"""
 
 
 
 
 
-g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
-print(g.kruskal_mst())
-print(g)
+
+
+"""g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
+print(g.kruskal())
+print(g)"""
