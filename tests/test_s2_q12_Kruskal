@@ -1,7 +1,7 @@
 # This will work if ran from the root folder.
 import sys 
 sys.path.append("delivery_network")
-
+"""J'ai rencontré un petit problème, lorsque je print les 2 graphes, je vois que ce sont les mêmes mais le test ne marche pas"""
 from graph import Graph, graph_from_file
 import unittest   # The test framework
 
