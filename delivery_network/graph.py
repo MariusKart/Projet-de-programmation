@@ -70,6 +70,9 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
+
+
+# Question 12
     def kruskal(self):
         """
         This function should return minimum spanning tree in a graph
@@ -79,6 +82,9 @@ class Graph:
         
         output:
         (Graph): minimum spanning tree
+
+        Complexity:
+        The worst case would be if the graph is already a tree so max complexity is o(number_of_edges)
         """
 
         def find(parent, i):
@@ -118,19 +124,19 @@ class Graph:
         edges = sorted(edges, key=lambda e: e[2])
         
         # Initialize empty tree
-        tree = Graph()
+        tree = Graph(self.nodes)
         for edge in edges:
             # Check if adding the edge will create a cycle (if the trees are already connected)
             if union(parent, rank, edge[0], edge[1]):
                 # Add edge to tree
                 tree.add_edge(edge[0], edge[1],edge[2])
             
-            # Stop when  all nodes are in the tree
-            if len(tree.nodes) == len(self.nodes):
-                break
+
         
         return tree
 
+
+#  Question 3
     def get_path_with_power(self, src, dest, power):
         """
         This function should return a path from source node to destination node in a weighted graph 
@@ -145,6 +151,9 @@ class Graph:
         Returns:
         (list): path from src to dest
         (None): if no path is found
+
+        Complexity:
+        Considering the number of nodes is n, he complexity is O(n) because at worse the loop in the dfs iterates on all the nodes until finding the destination node
         """
         def dfs(node, visited):
             visited.append(node) # as the dfs traverses the graph, we add the node to the visited list
@@ -162,8 +171,22 @@ class Graph:
 
     
 
-
+# Question 2
     def connected_components(self):
+        """This function should return a list of lists where each list contains the elements of a connected component. In the list, there should be as much lists as connected components in the graph.
+
+        Parameters:
+        self (graph)
+
+        Returns:
+
+        (list) : connected components
+        
+        Complexity:
+        if n is the number of nodes, the complexity is O(n) because the loop iterates on all the nodes
+
+        """
+
         L=[]
         n=self.nb_nodes
         #A first loop to create a list L of lists of direct neighbours for each node
@@ -208,9 +231,29 @@ class Graph:
         """
         return set(map(frozenset, self.connected_components()))
     
+
+
+
+# Question 6
     def min_power(self, src, dest):
-        """
-        Should return path, min_power. 
+        """This function should return the minimal power required to do the traject between the source and the destination given.
+
+        Parameters :
+
+        self (graph)
+
+        src (integer)
+
+        dest (integer)
+
+        Returns:
+
+        (list): The path which requires the minimal power from src to dest
+        (integer): The minimal power required to do the traject from src to dest
+        (None)  If there is no path between src and dest
+
+        Complexity:
+        The complexity is also O(n) because we create a loop on the number of nodes
         """
         #we first calculate the max power needed for the entire graph
         pmax=0
@@ -228,8 +271,9 @@ class Graph:
         return self.get_path_with_power(src,dest,p+1),p+1
 
 
-    def min_power_with_kruskal :
-        def min_power(self, src, dest):
+
+# Question 14
+    def min_power_with_kruskal(self, src, dest): 
         """
         Should return path and minimal powered required to go from source node to destination (None if no path is found)
         
@@ -259,7 +303,7 @@ class Graph:
         return self.get_path_with_power(src,dest,p+1),p+1
 
     
-
+# Question 1, Question 4
 
 def graph_from_file(filename):
     """
@@ -296,25 +340,8 @@ def graph_from_file(filename):
                 raise Exception("Format incorrect")
     return g
 
-"""data_path = "/home/onyxia/work/Projet-de-programmation/input/network.1.in"
-g=graph_from_file(data_path)#we create a graph from the data
-time=0 #we set a time counter
-with open ("/home/onyxia/work/Projet-de-programmation/input/routes.1.in","r") as in_routes_file:
-    nb_routes = int(in_routes_file.readline())
-    for _ in range(1,6):
-        t_start = perf_counter()
-        src, dest, _ = list(map(int, in_routes_file.readline().split()))
-        g.min_power(src, dest)
-        t_stop = perf_counter()
-        time+=(t_stop-t_start)
-print("total time=", time*nb_routes/5)"""
 
 
 
 
 
-
-
-"""g=graph_from_file("/home/onyxia/work/Projet-de-programmation/input/network.1.in")
-print(g.kruskal())
-print(g)"""
