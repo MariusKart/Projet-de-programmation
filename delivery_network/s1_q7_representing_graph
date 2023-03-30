@@ -19,5 +19,5 @@ def draw(graph_file):
                     graph.edge(str(node), str(neighbor[0]), label=str(neighbor[1]), dir='none')
     graph.render('graph', format='png', view=True)
 
-draw("/home/onyxia/work/Projet-de-programmation/input/network.00.in") 
+draw("/home/onyxia/work/Projet-de-programmation-RAVELOMANANA-MORO/input/network.00.in") 
 

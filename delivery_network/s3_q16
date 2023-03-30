@@ -1,0 +1,74 @@
+
+from graph import Graph, graph_from_file
+data_path = "input/network.04.in"
+g=graph_from_file(data_path)
+g.kruskal()
+visited = []
+route = ""
+parents = {vertice : (vertice, 0) for vertice in g.nodes}
+depths = {vertice : 0 for vertice in g.nodes}
+
+
+def dfs(node, graph):
+    visited.append(node)
+    for neighbor in graph.graph[node]:
+        if neighbor[0] not in visited:
+            parents[neighbor[0]] = (node, neighbor[1])
+            depth = depths[node]
+            depths[neighbor[0]] = depth + 1
+            dfs(neighbor[0], graph)
+    return parents, depths
+
+
+print(dfs(1, g))
+
+path = []
+def reach_depth(node1, node2):
+    if depths[node1] == depth[node2]:
+        return None
+    if depths[node1] < depths[node2]:
+        goal = depths[node1]
+        current_depth = depths[node2]
+        current_node = (node2, 0)
+        path.append(current_node)
+        while current_depth < goal:
+            current_depth -=1
+            current_node = parents[current_node]
+            path.append[current_node]
+        return node1, current_node
+    if depths[node2] < depths[node1]:
+        goal = depths[node2]
+        current_depth = depths[node2]
+        current_node = (node2, 0)
+        path.append(current_node)
+        while current_depth < goal:
+            current_depth -=1
+            current_node = parents[current_node]
+            path.append[current_node]
+    return node2, current_node
+
+path1 = []
+path2 = []
+traject = reach_depth(src, dest)
+s1 = traject[0]
+s2 = traject[1]
+path1.append(s1)
+path2.append(s2)
+while s1 != s2:
+    path1.append(parents[s1])
+    path2.append(parents[s2])
+    s1 = parents[s1]
+    s2 = parents[s2]
+if depths[src] < depths [dest]:
+    final_path = path1 + path2.reverse() + path.reverse()
+if depths[src] > depths [dest]:
+    final_path = path + path2 + path1.reverse()
+
+
+
+
+
+
+    
+
+
