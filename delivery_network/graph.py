@@ -84,7 +84,7 @@ class Graph:
         (Graph): minimum spanning tree
 
         Complexity:
-        The worst case would be if the graph is already a tree so max complexity is o(number_of_edges)
+        max complexity is o(number_of_edges^2)
         """
 
         def find(parent, i):
@@ -269,38 +269,40 @@ class Graph:
             p=p-1
         #Thus, we return p+1, the minimal power needed to get a path from the source to the destination
         return self.get_path_with_power(src,dest,p+1),p+1
+    
 
 
-
-# Question 14
-    def min_power_with_kruskal(self, src, dest): 
-        """
-        Should return path and minimal powered required to go from source node to destination (None if no path is found)
+    #question 18
+    def cout_profit(self,src,dest,profit, truckfile):
+        '''Cette fonction prend en argument un trajet (source,destination) et un profit et retourne le coût du trajet ainsi que le profit
         
-        Parameters:
-        self (Graph)
-        src (int): source node
-        dest (int): destination node
+        paramètres:
+        self: Graph
+        src : int
+        dest: int
+        profit: int
         
-        Output:
-        path (list): path from source to destination
-        power (int): minimal power required to go from source to destination
-        """
-        self.kruskal()
-        #we first calculate the max power needed for the entire graph
-        pmax=0
-        #For that, we look at each edge and if the power needed is higher than our pmax, we replace pmax by this new power
-        for i in self.nodes:
-            L=[self.graph[i][c][0] for c in range(len(self.graph[i]))]
-            for j in L:
-                if self.graph[i][L.index(j)][1]>pmax:
-                    pmax=self.graph[i][L.index(j)][1]
-        #Now, we initiate a loop at a p=pmax level of power and while we can do the traject with this power, we degrowth p by 1 until the traject is not possible for this power p
-        p=pmax
-        while self.get_path_with_power(src,dest,p)!=None:
-            p=p-1
-        #Thus, we return p+1, the minimal power needed to get a path from the source to the destination
-        return self.get_path_with_power(src,dest,p+1),p+1
+        return:
+        
+        (cout,profit)=(int,int)
+        
+        '''
+        "Puissance minimal pour couvrir le trajet src--> dest:"
+        pmin=self.min_power(src,dest)[1]
+        "Calcul du coût en parcourant le fichier camions trucks.x.in"
+        catalogue= open(truckfile, "r")
+        lines=[list(map(int,catalogue.readline().split(' '))) for i in range(1,int(catalogue.readline()))]
+        "On garde seulement les lignes ou la puissance du camion est supérieure ou égale à la puissance minimale pour le trajet (pmin)"
+        lines=[l for l in lines if l[0]>=pmin]
+        "Le coût du trajet est ensuite le minimum des coûts de ces camions"
+        cout= min([l[1] for l in lines])
+        
+        return(cout,profit)
+
+
+
+
+
 
     
 # Question 1, Question 4
@@ -339,7 +341,6 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
-
 
 
 

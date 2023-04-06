@@ -9,6 +9,7 @@ def draw(graph_file):
     graph_file (str): data path to any graph (networ.xx.in )
     """
     g = graph_from_file(graph_file)
+    g.kruskal()
     graph = Digraph()
     for node in g.nodes:
         graph.node(str(node))
@@ -19,5 +20,5 @@ def draw(graph_file):
                     graph.edge(str(node), str(neighbor[0]), label=str(neighbor[1]), dir='none')
     graph.render('graph', format='png', view=True)
 
-draw("/home/onyxia/work/Projet-de-programmation-RAVELOMANANA-MORO/input/network.00.in") 
+draw("/home/onyxia/work/Projet-de-programmation-RAVELOMANANA-MORO/input/network.01.in") 
 
