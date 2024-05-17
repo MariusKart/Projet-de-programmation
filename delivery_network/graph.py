@@ -84,7 +84,7 @@ class Graph:
         (Graph): minimum spanning tree
 
         Complexity:
-        max complexity is o(number_of_edges^2)
+        max complexity is o(Elog(E))
         """
 
         def find(parent, i):
